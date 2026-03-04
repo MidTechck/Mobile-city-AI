@@ -3,37 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile City AI</title>
+    <title>Mobile City Enterprise AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .glass { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px); }
-        #chat-window { display: none; transition: all 0.3s ease; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(20px); }
+        #chat-window { display: none; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-[#050505]">
 
-    <div id="chat-trigger" onclick="toggleChat()" class="fixed bottom-6 right-6 w-16 h-16 bg-blue-600 rounded-full shadow-2xl flex items-center justify-center cursor-pointer hover:scale-110 transition-all z-50">
-        <span class="text-white font-bold">AI</span>
+    <div id="chat-trigger" onclick="toggleChat()" class="fixed bottom-8 right-8 w-16 h-16 bg-blue-700 rounded-2xl shadow-[0_0_30px_rgba(29,78,216,0.5)] flex items-center justify-center cursor-pointer hover:scale-105 transition-all z-50 border border-white/10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
     </div>
 
-    <div id="chat-window" class="fixed bottom-24 right-6 w-[350px] h-[500px] glass rounded-3xl border border-white/20 shadow-2xl flex flex-col z-50">
-        <div class="p-4 border-b border-white/10 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-xs font-bold text-white">MC</div>
-                <span class="text-white font-bold">Mobile City Support</span>
+    <div id="chat-window" class="fixed bottom-28 right-8 w-[380px] h-[600px] glass rounded-[2rem] border border-white/10 shadow-2xl flex flex-col z-50 overflow-hidden">
+        
+        <div class="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">MC</div>
+                <div>
+                    <h2 class="text-white font-semibold text-sm">Mobile City Enterprise</h2>
+                    <div class="flex items-center space-x-1">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-white/40 text-[10px] uppercase tracking-widest">Automation Active</span>
+                    </div>
+                </div>
             </div>
-            <button onclick="toggleChat()" class="text-white/50 hover:text-white">✕</button>
+            <button onclick="toggleChat()" class="text-white/30 hover:text-white transition-colors text-xl">&times;</button>
         </div>
 
-        <div id="box" class="flex-grow overflow-y-auto p-4 space-y-4 text-sm scrollbar-hide">
-            <div class="bg-white/10 text-gray-200 p-3 rounded-2xl rounded-tl-none">Hello! Tap below to ask about S25 Ultra or iPhone 16 prices.</div>
+        <div id="box" class="flex-grow overflow-y-auto p-6 space-y-6 scrollbar-hide">
+            <div class="flex justify-start">
+                <div class="bg-white/5 border border-white/10 text-gray-200 p-4 rounded-2xl rounded-tl-none max-w-[85%] leading-relaxed">
+                    Greetings. Welcome to Mobile City Enterprise. How can we assist your business today?
+                </div>
+            </div>
         </div>
 
-        <div class="p-4 border-t border-white/10">
-            <div class="flex space-x-2">
-                <input id="in" type="text" placeholder="Type message..." class="flex-grow bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-blue-500">
-                <button onclick="send()" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold">Send</button>
+        <div class="p-6 bg-white/5 border-t border-white/10">
+            <div class="relative flex items-center">
+                <input id="in" type="text" 
+                    placeholder="Inquire about stock or pricing..." 
+                    class="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white text-sm outline-none focus:border-blue-500/50 transition-all placeholder:text-white/20"
+                    onkeypress="if(event.key === 'Enter') send()">
+                <button onclick="send()" class="absolute right-2 p-2 bg-blue-600 rounded-xl text-white hover:bg-blue-500 transition-all shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                </button>
             </div>
+            <p class="text-[10px] text-white/20 text-center mt-4 tracking-widest uppercase">Powered by MidTechck Automation</p>
         </div>
     </div>
 
@@ -44,28 +68,40 @@
         }
 
         async function send() {
-            const i = document.getElementById('in');
-            const b = document.getElementById('box');
-            if(!i.value) return;
+            const input = document.getElementById('in');
+            const box = document.getElementById('box');
+            if(!input.value.trim()) return;
 
-            const msg = i.value;
-            i.value = '';
-            b.innerHTML += `<div class="flex justify-end"><span class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%]">${msg}</span></div>`;
-            b.scrollTop = b.scrollHeight;
+            const userMsg = input.value;
+            input.value = '';
+
+            // User Message Bubble
+            box.innerHTML += `
+                <div class="flex justify-end">
+                    <div class="bg-blue-600 text-white p-4 rounded-2xl rounded-tr-none max-w-[85%] shadow-lg">
+                        ${userMsg}
+                    </div>
+                </div>`;
+            box.scrollTop = box.scrollHeight;
 
             try {
-                const res = await fetch('/chat', {
+                const response = await fetch('/chat', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({message: msg})
+                    body: JSON.stringify({message: userMsg})
                 });
-                const d = await res.json();
+                const data = await response.json();
                 
-                // CRITICAL: We use d.reply to match app.py
-                b.innerHTML += `<div class="flex justify-start"><span class="bg-white/10 text-gray-200 p-3 rounded-2xl rounded-tl-none max-w-[80%]">${d.reply}</span></div>`;
-                b.scrollTop = b.scrollHeight;
+                // Professional AI Response
+                box.innerHTML += `
+                    <div class="flex justify-start">
+                        <div class="bg-white/5 border border-white/10 text-gray-200 p-4 rounded-2xl rounded-tl-none max-w-[85%] leading-relaxed">
+                            ${data.reply}
+                        </div>
+                    </div>`;
+                box.scrollTop = box.scrollHeight;
             } catch(e) {
-                b.innerHTML += `<div class="text-red-400 text-xs">Connection error. Try again.</div>`;
+                box.innerHTML += `<div class="text-red-400 text-[10px] text-center uppercase tracking-widest">Network Interruption. Reconnecting...</div>`;
             }
         }
     </script>

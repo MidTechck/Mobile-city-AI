@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile City Enterprise AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style> .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(15px); } </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen flex flex-col items-center p-4">
+    <div class="w-full max-w-md flex flex-col h-[90vh]">
+        <div class="glass border border-white/10 p-4 rounded-3xl mb-4 flex items-center space-x-3">
+            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold">MC</div>
+            <div>
+                <h2 class="font-bold">Mobile City Pro</h2>
+                <p class="text-xs text-green-500">Active Deployment</p>
+            </div>
+        </div>
+        <div id="box" class="flex-grow overflow-y-auto space-y-4 p-2 text-sm text-gray-300"></div>
+        <div class="relative mt-4">
+            <input id="in" type="text" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 outline-none focus:border-blue-500" placeholder="Ask about prices...">
+            <button onclick="send()" class="absolute right-3 top-3 bg-blue-600 px-4 py-1 rounded-xl">Send</button>
+        </div>
+    </div>
+    <script>
+        async function send() {
+            const i = document.getElementById('in');
+            const b = document.getElementById('box');
+            if(!i.value) return;
+            const msg = i.value; i.value = '';
+            b.innerHTML += `<div class='text-right'><span class='bg-blue-600 p-3 rounded-2xl rounded-tr-none inline-block'>${msg}</span></div>`;
+            const res = await fetch('/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message: msg})
+            });
+            const d = await res.json();
+            b.innerHTML += `<div class='text-left'><span class='bg-white/10 p-3 rounded-2xl rounded-tl-none inline-block'>${d.reply}</span></div>`;
+            b.scrollTop = b.scrollHeight;
+        }
+    </script>
+</body>
+</html>
+

@@ -1,17 +1,13 @@
-import os
+import os, time, re, requests
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-import google.generativeai as genai
 
 app = Flask(__name__, static_folder='.')
 CORS(app)
 
-# Explicitly configure the API
-api_key = os.environ.get("GEMINI_API_KEY")
-genai.configure(api_key=api_key)
-
-# Using the most universally compatible model name
-model = genai.GenerativeModel('gemini-1.5-flash')
+API_KEY = os.environ.get("GEMINI_API_KEY")
+# Direct URL for the stable Gemini 1.5 Flash API
+URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
 
 @app.route('/')
 def index():
@@ -19,26 +15,30 @@ def index():
 
 @app.route('/chat', methods=['POST'])
 def chat():
+    user_msg = request.json.get("message", "")
+    
+    # 1. Hard-coded ROI (The "No-Fail" Zone)
+    msg_lower = user_msg.lower()
+    if "s25" in msg_lower and "how much" in msg_lower:
+        return jsonify({"reply": "The Samsung S25 Ultra is K19,999. Would you like to reserve one?"})
+    if "iphone 16" in msg_lower and "how much" in msg_lower:
+        return jsonify({"reply": "The iPhone 16 Pro Max is K30,999. We have limited stock in Desert Titanium."})
+
+    # 2. Direct REST API Call (Bypassing the buggy library)
+    payload = {
+        "contents": [{"parts": [{"text": f"You are Mobile City AI. Help the customer buy. User says: {user_msg}"}]}]
+    }
+    
     try:
-        data = request.json
-        user_msg = data.get("message", "")
-
-        # A "Ruthless" hard-coded check for the demo
-        # This ensures that even if the API blinks, you can show the prices.
-        if "price" in user_msg.lower() or "how much" in user_msg.lower():
-            if "s25" in user_msg.lower():
-                return jsonify({"reply": "The Samsung S25 Ultra is K19,999. Would you like to reserve one?"})
-
-        # The Real AI Call
-        # We wrap it in a very simple prompt to avoid versioning issues
-        response = model.generate_content(user_msg)
-        return jsonify({"reply": response.text})
-
+        response = requests.post(URL, json=payload, timeout=10)
+        result = response.json()
+        
+        # Extract the text from the complex Google JSON response
+        answer = result['candidates'][0]['content']['parts'][0]['text']
+        return jsonify({"reply": answer})
     except Exception as e:
-        # If it fails again, we need to see if it's still a 404
-        return jsonify({"reply": f"DEBUG: {str(e)}"})
+        return jsonify({"reply": f"Automation Syncing... (Error: {str(e)})"}), 500
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
 

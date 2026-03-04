@@ -1,13 +1,13 @@
 import os
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from google import genai  # Updated import
+from google import genai
 
 app = Flask(__name__, static_folder='.')
 CORS(app)
 
 # Updated Client Initialization
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+client = genai.Client(api_key=os.environ.get("AIzaSyAS_wZHAiBYT0FJ_zSqCpZcltBNj3HOmj4"))
 
 @app.route('/')
 def index():
@@ -17,16 +17,21 @@ def index():
 def chat():
     try:
         data = request.json
-        user_msg = data.get("message")
+        user_msg = data.get("message", "")
         
-        # Updated Generation Logic
+        # Professional Enterprise Prompt
         response = client.models.generate_content(
             model="gemini-1.5-flash",
-            contents=f"You are the Mobile City AI. Prices: S25 Ultra-K19,999. User: {user_msg}"
+            contents=f"You are the Mobile City AI. Brief & Professional. S25 Ultra is K19,999. iPhone 16 Pro Max is K30,999. Customer: {user_msg}"
         )
         
-        return jsonify({"reply": response.text}) # Ensure this says 'reply'
+        # Sending 'reply' to match the index.html
+        return jsonify({"reply": response.text})
     except Exception as e:
-        print(f"Error: {e}") # This will show up in Railway logs
-        return jsonify({"error": str(e)}), 500
+        print(f"Error: {e}")
+        return jsonify({"reply": "I'm having trouble connecting to the showroom. Please try again."}), 500
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
 
